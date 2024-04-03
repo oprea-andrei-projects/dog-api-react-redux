@@ -7,17 +7,17 @@ import React from 'react';
 
 interface ModalContentProps {
     breed:string,
-
+    image?:string
 }
 
-const ModalContent: React.FC<ModalContentProps> = ({ breed }) => {
+const ModalContent: React.FC<ModalContentProps> = ({ breed,image }) => {
 
     return (
 
         <>
             <h3>{breed}</h3>
             <Col xs={6} md={4}>
-                <Image src="holder.js/171x180" roundedCircle />
+                <Image src={image} rounded />
             </Col>
         </>
     )

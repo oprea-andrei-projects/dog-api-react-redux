@@ -1,4 +1,6 @@
 import HttpResponse from "../model/HttpResponse";
+import {ImageDto} from "../model/imageDto";
+import {AISuggestionResponse} from "../model/aiSuggestionResponse";
 
 export default class Api {
 
@@ -10,6 +12,9 @@ export default class Api {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
+
+            // mode:'no-cors',
+
             body: body == null ? null : JSON.stringify(body)
         };
 
@@ -48,24 +53,30 @@ export default class Api {
 
     getDasDogImage = async (name:string) =>{
         try{
-
-            let data = await this.api<null, void>(`/image/${name}`, "GET", null, "");
-
-            console.log(data);
-
-
             // @ts-ignore
-
-
-
+            let data:ImageDto  = await this.api<null, void>(`/image/${name}`, "GET", null, "");
+            console.log(data);
+            // @ts-ignore
                return data;
-
-
-
-
         }catch(e){
             console.log(e)
         }
+
+    }
+
+    // @ts-ignore
+    getAISuggestion = async (prompt:string):Promise<AISuggestionResponse>=>{
+
+        try{
+            let data:AISuggestionResponse = await this.api<null,AISuggestionResponse>(`/chat?prompt=${prompt}`, "GET", null,"");
+
+            return data;
+
+
+        }catch (e){
+            console.log(e)
+        }
+
 
     }
 

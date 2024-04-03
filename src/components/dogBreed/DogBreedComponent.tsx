@@ -1,14 +1,19 @@
 import React, {useState} from 'react';
 import ModalContent from "../modalBreed/ModalBreed";
+import {useSelector} from "react-redux";
+import {selectImage} from "../../store/dog.selectors";
+import Col from "react-bootstrap/Col";
+import Image from "react-bootstrap/Image";
 
 interface DogBreed {
     name: string;
+    image?:string;
 }
 
 const DogBreedComponent: React.FC<DogBreed> = ({ name }) => {
 
     const [isModalOpen, setModalOpen] = useState(false);
-
+    let theImage:string | undefined = useSelector(selectImage);
     const handleButtonClick = () => {
 
         setModalOpen(true);
@@ -19,6 +24,7 @@ const DogBreedComponent: React.FC<DogBreed> = ({ name }) => {
 
         setModalOpen(false);
     };
+
 
 
     return (
@@ -33,7 +39,7 @@ const DogBreedComponent: React.FC<DogBreed> = ({ name }) => {
                                 <span className="close" onClick={handleCloseModal}>
                                   &times;
                                 </span>
-                            <ModalContent breed={name} />
+
 
                         </div>
                     </div>

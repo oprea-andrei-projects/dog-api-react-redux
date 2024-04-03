@@ -2,55 +2,55 @@ import React, {useEffect, useState} from "react";
 // import Api from "../../service/Api";
 import {DogBreed} from "../../model/dogBreed";
 import Api from "../../service/Api";
-import BreedList from "../dogBreed/BreedList";
+
 import {useDispatch, useSelector} from "react-redux";
 import {selectDogBreeds} from "../../store/dog.selectors";
 import {loadDogBreeds} from "../../store/dog.reducers";
 // @ts-ignore
 import SearchLogo from "./images/icons8-search-128.png";
+
 // @ts-ignore
 import AiSearch from"./images/icons8-artificial-intelligence-64.png";
 import ModalContent from "../modalBreed/ModalBreed";
 import DogBreedComponent from "../dogBreed/DogBreedComponent";
+import DogBreedWithModal from "../dogBreed/DogBreedWithModal";
+import SearchComponent from "../SearchComponent";
+import ImageTitleModalComponent from "../dogBreed/ImageTitleModal";
 const Home: React.FC = () =>{
 
     let dispatch = useDispatch();
     let breeds = useSelector(selectDogBreeds);
     let api = new Api();
+    const [show, setShow] = useState(false);
 
-    const getImg = async () => {
-
-        const data = await api.getDasDogImage('akita')
-
-        console.log('getImg ----- ', data);
-    }
-
+    const getTheBreeds = async () => {
+        try {
+            const data = await api.getAllDogBreeds();
+            // @ts-ignore
+            dispatch(loadDogBreeds(data));
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
-        const getTheBreeds = async () => {
-            try {
-                const data = await api.getAllDogBreeds();
-                // @ts-ignore
-               console.log('data din home ',data.imageUrl);
-               // @ts-ignore
-                dispatch(loadDogBreeds(data));
-            } catch (error) {
-                console.error(error);
-            }
-        };
 
-        getImg();
         getTheBreeds();
-    }, [dispatch]);
+    },[]);
 
 
+    const handleShow1 = ()=>{
 
+        setShow(true);
+    }
 
+    // @ts-ignore
     return(
         <>
             <header>
                 <div className="banner">Let Andrei Help You With Your Project. Prices Starting at $10/hour</div>
                 <nav>
+
                     <div id="logo">
 
                         <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,32 +60,24 @@ const Home: React.FC = () =>{
                         Andrei's <br /> AI Dog App
                     </div>
                     <ul className="navigation-menu">
-                        <li><a href="#">Breeds</a>
+                        <li><a href="#locate">Breeds</a>
                             <ul className="subnav">
                                 <li className="card-med" id="sup-dog">
                                     <div className="card-image"><img src="https://ouch-cdn2.icons8.com/qPvaAv2gxwM3l0z7dl_eoh9v6h58HlzewBUfEgX6AZE/rs:fit:368:386/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvMTIv/ZmM4YjNlYmItMDNj/Ni00NGM3LTliNGUt/YTUyOWUzOGU4NTE2/LnBuZw.png" /></div>
-                                    <a href="#">
+                                    <a href="#locate">
                                         <span>Dogs</span>
                                         <span>See All <span className="material-symbols-outlined">
                                         arrow_forward
                                     </span></span>
                                     </a>
                                 </li>
-                                <li className="card-med" id="sup-cat">
-                                    <div className="card-image"><img src="https://ouch-cdn2.icons8.com/US6gJ6fHUOJqruLB7KDe5zEa82iDSp7OdO-bv-aLtvU/rs:fit:368:310/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvNjU5/LzdmOWU1ZjU0LTMx/ZDQtNDgwNS1iM2E2/LWM3NzgyMTcyNzJh/NC5wbmc.png" /></div>
-                                    <a href="#">
-                                        <span>Cats</span>
-                                        <span>See All <span className="material-symbols-outlined">
-                                        arrow_forward
-                                    </span></span>
-                                    </a>
-                                </li>
+
 
                             </ul>
                         </li>
                             <li><a href="#">Services</a>
-                                <ul className="subnav">
-                                    <li className="card-med" id="serv-groom">
+                                <ul className="subnav subnavService">
+                                    <li className="card-med" id="serv-groom" onClick={handleShow1}>
                                         <div className="card-image"> <img src={SearchLogo} alt="Search Icon" /></div>
                                         <a href="#">
                                             <span>Classic Search</span>
@@ -94,7 +86,8 @@ const Home: React.FC = () =>{
                                     </span></span>
                                         </a>
                                     </li>
-                                    <li className="card-med" id="serv-board">
+                                    <ImageTitleModalComponent show={show} handleShow={setShow}/>
+                                    <li className="card-med" id="serv-board" onClick={handleShow1}>
                                         <div className="card-image"><img src={AiSearch} alt="Ai Icon" /></div>
                                         <a href="#">
                                             <span>AI Search</span>
@@ -103,6 +96,7 @@ const Home: React.FC = () =>{
                                         </span></span>
                                         </a>
                                     </li>
+                                    <ImageTitleModalComponent show={show} handleShow={setShow}/>
                                 </ul>
                             </li>
 
@@ -116,8 +110,9 @@ const Home: React.FC = () =>{
             <section className="hero">
                 <h1>Your Number One Pet Breed Finder!</h1>
                 <div className="btn-group">
-                    <button className="btn-filled-dark">Search with AI</button>
+                    <button className="btn-filled-dark" style={{ marginRight: 'auto', borderRadius: '10px' }} onClick={handleShow1}>Search with AI</button>
                 </div>
+                <ImageTitleModalComponent show={show} handleShow={setShow} />
             </section>
 
 
@@ -127,7 +122,7 @@ const Home: React.FC = () =>{
                     <div className="btn-group">
 
                         {breeds.map((breed, index) => (
-                            <DogBreedComponent key={index} name={breed} />
+                            <DogBreedWithModal key={index} name={breed} />
                         ))}
                     </div>
                 </div>

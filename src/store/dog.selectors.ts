@@ -12,3 +12,8 @@ export const selectDogBreeds = createSelector(
     selectDogBreedState,
     (dogBreedState:DogBreedState):typeof dogBreedState.dogBreeds =>dogBreedState.dogBreeds
 )
+
+export const selectImage = createSelector(
+    selectDogBreedState,
+    (dogBreedState:DogBreedState):typeof dogBreedState.imageUrl => dogBreedState.imageUrl
+)
